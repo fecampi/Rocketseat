@@ -3,7 +3,9 @@ import fs from "node:fs/promises";
 /**
  * Classe para gerenciar um banco de dados simulado.
  */
-export class Database {
+class Database {
+  static #instance = null; // Instância privada
+
   #database = {}; // Objeto privado para armazenar os dados do banco de dados.
   databasePath;
 
@@ -13,8 +15,25 @@ export class Database {
    * @param {string} databasePath - O caminho relativo do arquivo JSON do banco de dados.
    */
   constructor(databasePath) {
+    if (Database.#instance) {
+      return Database.#instance;
+    }
     this.databasePath = databasePath;
     this.#initializeDatabase();
+    Database.#instance = this;
+  }
+
+  /**
+   * Retorna a instância singleton da classe Database.
+   * Se a instância ainda não existir, cria uma nova usando o caminho do banco de dados informado.
+   * @param {string} databasePath - O caminho relativo do arquivo JSON do banco de dados.
+   * @returns {Database} Instância singleton da classe Database.
+   */
+  static getInstance(databasePath) {
+    if (!Database.#instance) {
+      Database.#instance = new Database(databasePath);
+    }
+    return Database.#instance;
   }
 
   /**
@@ -85,7 +104,7 @@ export class Database {
     this.#writeDatabaseFile();
     return data;
   }
-  
+
   /**
    * Atualiza um registro na tabela especificada pelo ID.
    * @param {string} table - Nome da tabela.
@@ -115,3 +134,6 @@ export class Database {
     }
   }
 }
+
+const database = Database.getInstance("./db.json");
+export { database };

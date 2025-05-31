@@ -1,6 +1,5 @@
 import http from "node:http";
-
-import { json } from "./middlewares/json.js";
+import { bodyParser } from "./middlewares/bodyParser.js";
 import { routes } from "./routes.js";
 import { extractQueryParams } from "./utils/extract-query-params.js";
 
@@ -26,25 +25,22 @@ const server = http.createServer(async (req, res) => {
   const { method, url } = req;
 
   //-  Middlewares
-  // Funções que interceptam e manipulam a requisição e a resposta de uma rota
-  await json(req, res);
+  await bodyParser(req, res);
 
-  const route = routes.find((route) => {
+  const route = routes.find(route => {
     return route.method === method && route.path.test(url);
   });
 
   if (route) {
     const routeParams = req.url.match(route.path);
-
-    const { query, ...params } = routeParams.groups;
-
-    req.params = params;
+    const { query, ...params } = routeParams.groups || {};
+    req.params = params || {};
     req.query = query ? extractQueryParams(query) : {};
 
     return route.handler(req, res);
   }
 
-  // Respondendo com 404 Not Found caso a rota não exista
-  return res.writeHead(404).end();
+  res.writeHead(404).end();
 });
+
 export { server };
