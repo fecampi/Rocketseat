@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React App</title>
+    <!-- React JS -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <!-- ReactDOM -->
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel para suportar JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Script com JSX -->
+    <script type="text/babel">
+      // Componente Button
+      const Button = ({ children, variant, className, ...props }) => {
+        /*
+  ({ children, variant })
+  => Isso é desestruturação de props. Ao invés de acessar props.children e props.variant,
+     extraímos diretamente essas duas propriedades como variáveis locais.
+     Exemplo equivalente:
+     const Button = (props) => {
+       const { children, variant } = props;
+     }
+
+  ...props
+  => Isso é o operador rest. Ele captura todas as outras props que não foram desestruturadas
+     (como title, id, onClick, disabled, etc) e coloca tudo dentro do objeto 'props'.
+     Assim, o componente continua flexível e pode receber qualquer prop adicional.
+
+  className
+  => Essa prop permite que o componente receba classes CSS externas.
+     Quando usamos `className` dentro do componente, conseguimos combinar o estilo padrão (como bg-purple-500)
+     com outros estilos adicionais passados de fora, como "rounded" ou "text-white".
+
+  {variant === "primary" ? "bg-purple-500" : "bg-gray-500"}
+  => As chaves permitem usar uma expressão JavaScript (operador ternário) 
+     dentro do JSX para definir a classe CSS dinamicamente com base no valor da prop 'variant'.
+
+  {children}
+  => As chaves permitem inserir o conteúdo passado entre as tags <Button> no local onde o botão exibe o texto.
+  */
+
+        return (
+          <button
+            {...props} // Aqui usamos o operador spread para repassar todas as props extras ao botão real.
+            // Exemplo: title="Clique para enviar" será aplicado como atributo HTML.
+            // Isso torna o componente reutilizável e compatível com atributos padrão do HTML.
+            className={`${
+              variant === "primary" ? "bg-purple-500" : "bg-gray-500"
+            } ${className || ""}`}
+            // A string de className acima concatena o estilo base com o className extra vindo de fora.
+            // Exemplo: <Button className="rounded text-white" /> => o botão terá bg + rounded + text-white.
+          >
+            {children}
+          </button>
+        );
+      };
+
+      // Componente App
+      const App = () => {
+        return (
+          <main className="flex gap-2 p-3">
+            <Button title="Clique para enviar">Meu Botão</Button>
+            <Button variant="primary">Meu Botão</Button>
+            <Button className="rounded text-white">Meu Botão</Button>
+          </main>
+        );
+      };
+
+      // Renderização do App
+      const rootElement = document.getElementById("root");
+      const root = ReactDOM.createRoot(rootElement);
+      root.render(<App />);
+    </script>
+  </body>
+</html>
