@@ -1,70 +1,114 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tailwind + Fontes Customizadas</title>
+    <!-- Importa fontes do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Fontes externas -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik&family=Fira+Code&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <title>Rocketseat - React.js - Fundamentos</title>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Estilos customizados utilizando sintaxe do TailwindCSS (não padrão) -->
+    <style type="text/tailwindcss">
+      @theme {
+        --text: #ebebeb; /* Cor do texto principal */
+        --text-secondary: #6b6b6b; /* Cor de texto secundária */
+        --primary: #462878; /* Cor principal da aplicação */
+        --background: #2d2a37; /* Cor de fundo */
 
-  <!-- CSS custom: variáveis para fontes, pesos e cores -->
-  <style>
-    :root {
-      /* Cores principais */
-      --color-background: #1e1e2e;
-      --color-text-primary: #f5f5f5;
-      --color-text-secondary: #8a8a8a;
-      --color-accent: #7c3aed;
+        /* Gradiente para hover e backgrounds */
+        --gradient: 180deg, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0.05) 100%;
+        --gradient-hover: 180deg, rgba(0, 0, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%;
 
-      /* Fontes */
-      --font-primary: 'Inter', sans-serif;
-      --font-secondary: 'Rubik', sans-serif;
-      --font-mono: 'Fira Code', monospace;
+        /* Sombra customizada */
+        --shadow: 
+          0px 11px 7px 0px rgba(0, 0, 0, 0.01),
+          0px 7px 7px 0px rgba(0, 0, 0, 0.04),
+          0px 4px 6px 0px rgba(0, 0, 0, 0.1),
+          0px 2px 4px 0px rgba(0, 0, 0, 0.26),
+          0px 0px 2px 0px rgba(0, 0, 0, 0.29),
+          0px 2px 3px 0px rgba(255, 255, 255, 0.06) inset;
 
-      /* Pesos padrão */
-      --font-weight-normal: 400;
-      --font-weight-bold: 600;
-    }
+        /* Fonte principal */
+        --font-sans: "Rubik", sans-serif;
+      }
+    </style>
+  </head>
 
-    body {
-      font-family: var(--font-primary);
-    }
-  </style>
-</head>
+  <!-- A classe `className="text-(--text) font-(--font-sans)"` tenta aplicar variáveis customizadas como se fossem utilitários do Tailwind,
+       mas Tailwind CSS padrão não suporta isso diretamente dessa forma. -->
+  <body className="text-(--text) font-(--font-sans)">
+    <div id="root"></div>
 
-<body class="bg-[--color-background] text-[--color-text-primary] min-h-screen flex items-center justify-center px-4">
+    <!-- Importação dos pacotes necessários via CDN -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <main class="text-center space-y-6">
+    <script type="text/babel">
+      // Mapeamento dos estilos disponíveis para o componente Text
+      const textVariants = {
+        default: "text-xl", // Tamanho padrão
+        muted: "text-xl text-(--text-secondary)", // Texto com cor secundária
+        heading: "text-2xl", // Título
+        blast: "text-3xl", // Texto de destaque
+      };
 
-    <!-- Título com fonte secundária -->
-    <h1 class="text-4xl font-bold text-[--color-accent] [font-family:var(--font-secondary)]">
-      Fonte Secundária (Rubik)
-    </h1>
+      /**
+       * Componente Text genérico
+       * Props:
+       * - as: tipo de tag HTML (span, p, h1, etc.) - padrão é "span"
+       * - variant: estilo visual baseado nos estilos definidos acima
+       * - className: classe extra para customização
+       * - children: conteúdo que será renderizado dentro do texto
+       */
+      function Text({
+        as = "span", // Define qual tag HTML será usada (ex: h1, p, span)
+        variant = "default", // Qual estilo visual aplicar
+        className,
+        children,
+        ...props
+      }) {
+        return React.createElement(
+          as, // Tipo da tag
+          {
+            className: `${textVariants[variant]} ${className ? className : ""}`, // Aplica estilo correspondente
+            ...props,
+          },
+          children // Conteúdo interno do componente
+        );
+      }
 
-    <!-- Texto com fonte primária -->
-    <p class="text-lg [font-family:var(--font-primary)] [font-weight:var(--font-weight-normal)] text-[--color-text-secondary]">
-      Esta é a fonte principal (Inter), peso normal.
-    </p>
+      /**
+       * Componente principal da aplicação
+       */
+      function App() {
+        return (
+          <main className="py-28 px-4">
+            {/* Texto com estilo blast e cor primária */}
+            <Text variant="blast" className="text-(--primary)">
+              Calculator
+            </Text>
 
-    <!-- Texto monoespaçado com fonte técnica -->
-    <p class="text-sm [font-family:var(--font-mono)] bg-black/30 px-3 py-1 rounded-md inline-block">
-      Fonte monoespaçada (Fira Code)
-    </p>
+            {/* Texto diretamente no DOM (fora do componente) */}
+            Calculator <br />
 
-    <!-- Botão estilizado -->
-    <button
-      class="bg-[--color-accent] hover:brightness-110 text-white [font-family:var(--font-secondary)] font-bold px-6 py-2 rounded-md shadow transition-all">
-      Botão Acentuado
-    </button>
+            {/* Texto com estilo muted (cor secundária) */}
+            <Text variant="muted">Calculator</Text>
+            <br />
+          </main>
+        );
+      }
 
-  </main>
-</body>
-
+      // Renderiza o App dentro da div com id="root"
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
 </html>
