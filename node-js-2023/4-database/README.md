@@ -13,15 +13,11 @@ Para quem está começando a estudar bancos de dados, o **SQLite** surge como um
 
 ---
 
-## Formas de Comunicação com o Banco de Dados 🗣️
+### Formas de Comunicação com o Banco de Dados 🗣️
 
-Existem várias maneiras de um aplicativo se comunicar com um banco de dados. As principais incluem:
-
-### 1. Drives Nativos
-
-São bibliotecas específicas fornecidas pelos próprios bancos de dados (ou por terceiros) que permitem que uma linguagem de programação (como Python, Java, JavaScript) se conecte e execute comandos SQL diretamente no banco.
-
-### 2. Query Builders (Construtores de Consultas)
+1. **Drivers Nativos** — bibliotecas que executam SQL diretamente.
+2. **Query Builders** — geram SQL via métodos na linguagem (ex.: Knex.js).
+3. **ORMs** — mapeiam tabelas para classes/objetos (ex.: Prisma, TypeORM).
 
 **Query Builders** são ferramentas que facilitam a escrita de consultas SQL utilizando a sintaxe da própria linguagem de programação (como JavaScript, por exemplo). Em vez de escrever strings de SQL puras, você utiliza métodos e funções que constroem a consulta dinamicamente.
 
@@ -65,3 +61,153 @@ Basicamente, um ORM mapeia as tabelas do seu banco de dados para classes (ou obj
 *Fique tranquilo, abordaremos os ORMs com muito mais detalhes e exemplos práticos mais adiante! Por agora, basta saber que eles existem e representam um nível de abstração ainda maior sobre o acesso a dados.*
 
 ---
+## Exemplo Prático: Knex + SQLite3
+
+Exemplo básico de uso do **Knex.js** com **SQLite3**.
+
+---
+
+## 📦 Instalação
+
+```bash
+npm install knex sqlite3
+npm install -D tsx typescript ts-node @types/node
+```
+
+---
+
+## 🗂 Estrutura de arquivos
+
+```
+.
+├── db/
+│   ├── migrations/      # arquivos de migration
+│   └── app.db           # arquivo SQLite
+├── src/
+│   ├── database.ts      # configuração do Knex
+│   └── server.ts         # script de exemplo
+└── knexfile.ts          # config para CLI do Knex
+```
+
+---
+
+## 🔗 Configuração do banco
+
+### `src/database/knex.ts`
+
+```ts
+import { Knex, knex as setupKnex } from 'knex'
+
+export const config: Knex.Config = {
+  client: 'sqlite',
+  connection: {
+    filename: './db/app.db',
+  },
+  useNullAsDefault: true,
+  migrations: {
+    extension: 'ts',
+    directory: './db/migrations',
+  },
+}
+
+export const knex = setupKnex(config)
+```
+---
+## 📁 Arquivo de configuração do CLI 
+```ts
+import { config } from './src/database'
+export default config
+
+```
+
+Para que serve?
+Este arquivo permite que você use os comandos do Knex CLI com a mesma configuração do seu projeto. Por exemplo:
+```
+npx knex migrate:make create-documents    # gera um arquivo de migration
+npx knex migrate:latest                   # executa todas as migrations pendentes
+npx knex migrate:rollback                  # desfaz a migration mais recente
+
+```
+
+
+---
+
+## Migrations
+### Vantagens de Migrations
+
+- Versiona alterações de esquema junto ao código
+- Garante replicação fiel e rollback rápido
+- Automatiza e padroniza mudanças em qualquer ambiente
+---
+
+- **Criar Migration:**
+    
+    ```bash
+    npx knex migrate:make create_transactions_table
+    
+    ```
+    
+- **Exemplo de arquivo:**
+    
+    ```
+    import { Knex } from 'knex'
+    
+    export async function up(knex: Knex): Promise<void> {
+      await knex.schema.createTable('transactions', table => {
+        table.uuid('id').primary()
+        table.text('title').notNullable()
+        table.decimal('amount', 10, 2).notNullable()
+        table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable()
+      })
+    }
+    
+    export async function down(knex: Knex): Promise<void> {
+      await knex.schema.dropTable('transactions')
+    }
+    
+    ```
+---
+
+## Uso no Código
+
+### `src/server.ts`
+
+```
+import { knex } from './database/knex'
+import { randomUUID } from 'crypto'
+
+async function main() {
+  // 1. Insert
+  const id = randomUUID()
+  await knex('transactions').insert({
+    id,
+    title: 'Curso',
+    amount: 1000,
+  })
+
+  // 2. Select
+  const list = await knex('transactions').select('*')
+  console.log(list)
+
+  // 3. Update
+  await knex('transactions')
+    .where('id', id)
+    .update({ title: 'Curso Atualizado' })
+
+  // 4. Delete
+  await knex('transactions')
+    .where('amount', '<', 100)
+    .del()
+
+  await knex.destroy()
+}
+
+main()
+
+```
+
+---
+
+- Sempre chame `knex.destroy()` ao finalizar o script.
+- Versione o diretório de migrations e seeds no seu repositório.
+- Para produção, considere usar outro banco (PostgreSQL, MySQL) e ajuste o `client`.
