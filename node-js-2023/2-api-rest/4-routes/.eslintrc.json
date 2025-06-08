@@ -2,8 +2,5 @@
   "extends": ["@rocketseat/eslint-config/node"],
   "parserOptions": {
     "project": "./tsconfig.json"
-  },
-  "rules": {
-    "@typescript-eslint/no-require-imports": "off"
   }
 }
