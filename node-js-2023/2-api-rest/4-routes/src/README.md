@@ -6,46 +6,6 @@
 Este projeto é uma API REST desenvolvida com **Node.js** utilizando o framework **Fastify**. Durante o desenvolvimento, foram estudados conceitos importantes como **Fastify Hooks**, **middlewares**, **validação com Zod** e uso das APIs de resposta do Fastify.
 
 ---
-## 📖 Conceitos
-
-### Requisitos Funcionais (RF)
-
-👉 **O que são?**  
-Os requisitos funcionais definem *o que o sistema deve fazer*, ou seja, as funcionalidades que ele precisa oferecer aos usuários.
-
-### Regras de Negócio (RN)
-
-👉 **O que são?**  
-As regras de negócio determinam as **condições e restrições** que devem ser respeitadas, garantindo que as operações estejam de acordo com o contexto do negócio.
-
-### Requisitos Não Funcionais (RNF)
-
-👉 **O que são?**  
-Os requisitos não funcionais descrevem **qualidades e características técnicas** esperadas do sistema, como desempenho, segurança, disponibilidade, entre outras.
-
----
-
-## ✅ Funcionalidades e Requisitos
-
-### Requisitos Funcionais (RF)
-
-- [x] O usuário deve poder criar uma nova transação;
-- [x] O usuário deve poder obter um resumo da sua conta;
-- [x] O usuário deve poder listar todas transações que já ocorreram;
-- [x] O usuário deve poder visualizar uma transação única;
-
-### Regras de Negócio (RN)
-
-- [x] A transação pode ser do tipo **crédito**, que **somará ao saldo total**, ou **débito**, que **subtrairá** do saldo;
-- [x] Deve ser possível identificar o usuário em cada requisição (ex: autenticação via token);
-- [x] O usuário só pode visualizar transações que ele mesmo criou;
-
-### Requisitos Não Funcionais (RNF)
-
-- [x] As APIs devem ser autenticadas utilizando cookie de sessão para controle de acesso;
-- [x] O sistema deve permitir múltiplos usuários simultâneos sem interferência nos dados (isolamento de dados por cookie de sessão);
-
----
 
 ## Conteúdo estudado
 
@@ -94,6 +54,8 @@ src/
 │   └── transactions.ts    # Rotas relacionadas a transações (GET, POST, etc)
 ├── middlewares/
 │   └── checkSessionIdExists.ts  # Middleware para validação do cookie de sessão
+├── plugins/
+│   └── fastifyCookie.ts   # Plugin para registrar o cookie no Fastify
 ├── app.ts                 # Instancia o Fastify, registra plugins, rotas e hooks
 └── server.ts              # Responsável por iniciar o servidor HTTP
 ```
@@ -148,3 +110,4 @@ npm run dev
 
 ---
 
+Se precisar de ajuda, só avisar! 🚀
