@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rocketseat - React.js - Fundamentos</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+
+  <body class="bg-gray-100 p-10 text-gray-900">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      function ListNames() {
+        const [names] = React.useState(["Ana", "Bruno", "Carlos", "Camila"]);
+
+        return (
+          <div className="mb-8">
+            <h2 className="text-xl font-bold mb-2">Lista de Nomes</h2>
+            <ul className="list-disc list-inside space-y-1">
+              {names.map((name, index) => (
+                <li key={`${index}-${name}`}>{name}</li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+
+      function OperationHistory() {
+        const operations = [
+          {
+            text: "1 + 1 = 2",
+            className: "text-green-500 font-bold underline",
+          },
+          {
+            text: "2 + 3 + 1 = 6",
+            className: "text-yellow-600 font-bold italic",
+          },
+          {
+            text: "2 + 3 = 5",
+            className: "text-red-500 text-xl",
+          },
+          {
+            text: "5 * 5 = 25",
+            className: "text-gray-700",
+          },
+        ];
+
+        return (
+          <div>
+            <h2 className="text-xl font-bold mb-2">Histórico de Operações</h2>
+            <ul className="list-disc list-inside space-y-1">
+              {operations.map((op, index) => (
+                <li key={index} className={op.className}>
+                  {op.text}
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+
+      function App() {
+        return (
+          <main>
+            <ListNames />
+            <OperationHistory />
+          </main>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
