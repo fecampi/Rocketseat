@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rocketseat - React.js - Custom Hook</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        
+      // Custom Hook que encapsula a lógica de contador
+      function useCounter(initialValue = 0) {
+        const [count, setCount] = React.useState(initialValue);
+
+        const increment = () => setCount((prev) => prev + 1);
+        const decrement = () => setCount((prev) => prev - 1);
+        const reset = () => setCount(initialValue);
+
+        return { count, increment, decrement, reset };
+      }
+
+
+      // App principal - Componente que usa o custom hook
+      function App() {
+        const { count, increment, decrement, reset } = useCounter(0);
+
+        return (
+          <div>
+            <h2>Contador com Custom Hook</h2>
+            <p>Valor atual: {count}</p>
+            <button onClick={increment}>Incrementar</button>
+            <button onClick={decrement}>Decrementar</button>
+            <button onClick={reset}>Resetar</button>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
